@@ -209,21 +209,4 @@ static int android_check(URLContext *h, int mask)
     return (mask & AVIO_FLAG_READ);
 }
 
-static URLProtocol ff_android_protocol;
-
-void ffmpeg_register_android_source()
-{
-    memset(&ff_android_protocol, 0, sizeof(URLProtocol));
-    ff_android_protocol.name                = "android-source";
-    ff_android_protocol.url_open            = android_open;
-    ff_android_protocol.url_read            = android_read;
-    ff_android_protocol.url_write           = android_write;
-    ff_android_protocol.url_seek            = android_seek;
-    ff_android_protocol.url_close           = android_close;
-    ff_android_protocol.url_get_file_handle = android_get_handle;
-    ff_android_protocol.url_check           = android_check;
-    
-    ffurl_register_protocol(&ff_android_protocol);
-}
-
 }  // namespace android
