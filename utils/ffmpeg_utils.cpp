@@ -218,9 +218,6 @@ status_t initFFmpeg()
         av_register_all();
         avformat_network_init();
 
-        /* register android source */
-        ffmpeg_register_android_source();
-
         if (av_lockmgr_register(lockmgr)) {
             ALOGE("could not initialize lock manager!");
             ret = NO_INIT;
