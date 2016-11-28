@@ -21,6 +21,7 @@
 
 #include "SoftFFmpegVideo.h"
 #include "FFmpegComponents.h"
+#include "ffmpeg_hwaccel.h"
 
 #include <media/stagefright/foundation/ADebug.h>
 #include <media/stagefright/foundation/AUtils.h>
@@ -127,6 +128,7 @@ status_t SoftFFmpegVideo::initDecoder(enum AVCodecID codecID) {
     mCtx->extradata = NULL;
     mCtx->width = mWidth;
     mCtx->height = mHeight;
+    ffmpeg_hwaccel_init(mCtx);
     return OK;
 }
 
@@ -135,6 +137,7 @@ void SoftFFmpegVideo::deInitDecoder() {
         if (avcodec_is_open(mCtx)) {
             avcodec_flush_buffers(mCtx);
         }
+        ffmpeg_hwaccel_deinit(mCtx);
         if (mCtx->extradata) {
             av_free(mCtx->extradata);
             mCtx->extradata = NULL;
@@ -498,7 +501,14 @@ int32_t SoftFFmpegVideo::decodeVideo() {
                 ret = ERR_NO_FRM;
             }
         } else {
-            ret = ERR_OK;
+            err = ffmpeg_hwaccel_get_frame(mCtx, mFrame);
+            if (err < 0) {
+                ALOGE("ffmpeg HW video decoder failed to decode frame. (%d)", err);
+                //don't send error to OMXCodec, skip!
+                ret = ERR_NO_FRM;
+            } else {
+                ret = ERR_OK;
+            }
         }
     }
 

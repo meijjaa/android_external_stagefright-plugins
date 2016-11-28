@@ -6,7 +6,9 @@ include external/ffmpeg/android/ffmpeg.mk
 LOCAL_SRC_FILES := \
 	FFmpegOMXPlugin.cpp \
 	SoftFFmpegAudio.cpp \
-	SoftFFmpegVideo.cpp
+	SoftFFmpegVideo.cpp \
+	ffmpeg_hwaccel.c \
+	../../ffmpeg/ffmpeg_vaapi.c
 
 LOCAL_C_INCLUDES += \
 	$(LOCAL_PATH)/../include \
@@ -15,7 +17,8 @@ LOCAL_C_INCLUDES += \
 	$(TOP)/frameworks/native/include/media/openmax \
 	$(TOP)/frameworks/av/include \
 	$(TOP)/frameworks/av/media/libstagefright \
-	$(TOP)/frameworks/av/media/libstagefright/include
+	$(TOP)/frameworks/av/media/libstagefright/include \
+	$(TOP)/hardware/intel/libva
 
 LOCAL_SHARED_LIBRARIES := \
 	libdl             \
@@ -29,7 +32,8 @@ LOCAL_SHARED_LIBRARIES := \
 	libswscale        \
 	libstagefright    \
 	libstagefright_foundation \
-	libstagefright_omx
+	libstagefright_omx        \
+	libva
 
 LOCAL_MODULE:= libffmpeg_omx
 
